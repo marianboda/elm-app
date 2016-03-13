@@ -1,12 +1,38 @@
-import Html
+module Main (..) where
+
+import Html exposing (Html)
 import Mouse
-import String
 
-view : Int -> Html.Html
-view count = Html.text (toString count)
+type alias Model =
+  { count: Int }
 
-countSignal : Signal Int
-countSignal = Signal.foldp (\_ total-> total + 1) 0 Mouse.clicks
+type Action
+  = NoOp
+  | Increase
 
-main : Signal.Signal Html.Html
-main = Signal.map view countSignal
+initialModel : Model
+initialModel = { count = 0 }
+
+view : Model -> Html
+view model = Html.text (toString model.count)
+
+update : Action -> Model -> Model
+update action model =
+  case action of
+    Increase ->
+      { model | count = model.count + 1}
+    NoOp -> model
+
+actionSignal : Signal.Signal Action
+actionSignal = Signal.map (\_ -> Increase) Mouse.clicks
+
+modelSignal : Signal.Signal Model
+modelSignal =
+  Signal.foldp
+    update
+    initialModel
+    actionSignal
+
+main : Signal.Signal Html
+
+main = Signal.map view modelSignal
