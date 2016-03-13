@@ -2,12 +2,11 @@ import Html
 import Mouse
 import String
 
-view: Int -> Html.Html
-view x = Html.text (toString x)
+view : Int -> Html.Html
+view count = Html.text (toString count)
 
-double x = x * 2
+countSignal : Signal Int
+countSignal = Signal.foldp (\_ total-> total + 1) 0 Mouse.clicks
 
-doubleSignal = Signal.map double Mouse.x
-
-main: Signal.Signal Html.Html
-main = Signal.map view doubleSignal
+main : Signal.Signal Html.Html
+main = Signal.map view countSignal
