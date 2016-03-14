@@ -1,6 +1,7 @@
 module Main (..) where
 
 import Html exposing (Html)
+import Html.Events as Events
 import Mouse
 import Keyboard
 import Debug
@@ -20,8 +21,16 @@ initialModel = {
   chars = "",
   count = 0 }
 
-view : Model -> Html
-view model = Html.text (toString model.count)
+view : Signal.Address Action -> Model -> Html
+view address model =
+  Html.div
+    []
+    [
+      Html.div [] [Html.text (toString model.count)]
+    , Html.button
+        [ Events.onClick address (MouseClick 1) ]
+        [ Html.text "Click"]
+    ]
 
 update : Action -> Model -> Model
 update action model =
@@ -40,7 +49,12 @@ keyPressSignal : Signal.Signal Action
 keyPressSignal = Signal.map (\key -> KeyPress key) Keyboard.presses
 
 actionSignal : Signal.Signal Action
-actionSignal = Signal.merge mouseClickSignal keyPressSignal
+actionSignal = Signal.merge mb.signal keyPressSignal
+
+mb : Signal.Mailbox Action
+mb = Signal.mailbox NoOp
+
+
 
 modelSignal : Signal.Signal Model
 modelSignal =
@@ -51,4 +65,4 @@ modelSignal =
 
 main : Signal.Signal Html
 
-main = Signal.map view modelSignal
+main = Signal.map (view mb.address) modelSignal
