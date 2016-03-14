@@ -3,17 +3,22 @@ module Main (..) where
 import Html exposing (Html)
 import Mouse
 import Keyboard
+import Debug
+import String
+import Char
 
 type alias Model =
-  { count: Int }
+  { chars: String, count: Int }
 
 type Action
   = NoOp
-  | MouseClick
-  | KeyPress
+  | MouseClick Int
+  | KeyPress Int
 
 initialModel : Model
-initialModel = { count = 0 }
+initialModel = {
+  chars = "",
+  count = 0 }
 
 view : Model -> Html
 view model = Html.text (toString model.count)
@@ -21,17 +26,18 @@ view model = Html.text (toString model.count)
 update : Action -> Model -> Model
 update action model =
   case action of
-    MouseClick ->
-      { model | count = model.count + 1}
-    KeyPress ->
-      { model | count = model.count + 1}
+    MouseClick amount ->
+      { model | count = model.count + amount}
+    KeyPress key ->
+      Debug.log (toString key)
+      { model | chars = String.concat [model.chars, String.fromChar (Char.fromCode key)]}
     NoOp -> model
 
 mouseClickSignal : Signal.Signal Action
-mouseClickSignal = Signal.map (\_ -> MouseClick) Mouse.clicks
+mouseClickSignal = Signal.map (\_ -> MouseClick 2) Mouse.clicks
 
 keyPressSignal : Signal.Signal Action
-keyPressSignal = Signal.map (\_ -> KeyPress) Keyboard.presses
+keyPressSignal = Signal.map (\key -> KeyPress key) Keyboard.presses
 
 actionSignal : Signal.Signal Action
 actionSignal = Signal.merge mouseClickSignal keyPressSignal
