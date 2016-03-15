@@ -1,0 +1,16 @@
+{
+  "artists": [
+    {
+      "id": 1,
+      "name": "Incorrect Segment"
+    },
+    {
+      "id": 2,
+      "name": "Anarchists Of Cyberpunk"
+    },
+    {
+      "id": 3,
+      "name": "F.O.D."
+    }
+  ]
+}
