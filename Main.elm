@@ -3,38 +3,34 @@ module Main (..) where
 import Html exposing (Html)
 import Html.Events as Events
 import Debug
-
 import StartApp.Simple
 
-type alias Model =
-  { chars: String, count: Int }
+import IncWidget as Widget
+
+type alias AppModel =
+  { widgetModel : Widget.Model }
 
 type Action
-  = NoOp
-  | Increase
-  | KeyPress Int
+  = WidgetAction Widget.Action
+  | NoOp
 
-initialModel : Model
-initialModel = {
-  chars = "",
-  count = 0 }
+initialModel : AppModel
+initialModel = { widgetModel = Widget.initialModel}
 
-view : Signal.Address Action -> Model -> Html
+view : Signal.Address Action -> AppModel -> Html
 view address model =
   Html.div
     []
-    [
-      Html.div [] [Html.text (toString model.count)]
-    , Html.button
-        [ Events.onClick address Increase ]
-        [ Html.text "Click"]
-    ]
+    [ Widget.view (Signal.forwardTo address WidgetAction) model.widgetModel ]
 
-update : Action -> Model -> Model
+update : Action -> AppModel -> AppModel
 update action model =
   case action of
-    Increase -> { model | count = model.count +2 }
-    NoOp -> model
+    WidgetAction subAction ->
+      let
+        updatedWidgetModel = Widget.update subAction model.widgetModel
+      in
+        { model | widgetModel = updatedWidgetModel }
     _ -> model
 
 main : Signal.Signal Html
