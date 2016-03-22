@@ -4,7 +4,7 @@ import Html
 import Time
 import Http
 import Task
--- import Random
+import String
 
 clockSignal : Signal Time.Time
 clockSignal = Time.every (2 * Time.second)
@@ -15,7 +15,12 @@ mb =
 
 httpTask : Task.Task Http.Error String
 httpTask =
-  Http.getString "http://localhost:3000/artists/2"
+  Http.getString
+    ( String.concat [
+        "http://localhost:3000/artists/",
+        toString 2
+      ]
+    )
 
 sendToMb : String -> Task.Task x ()
 sendToMb result =
