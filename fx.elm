@@ -15,12 +15,7 @@ type alias Model = String
 view : Signal.Address Action -> Model -> Html.Html
 view address message =
   Html.div [] [
-    Html.button [
-      Events.onClick address Refresh
-    ]
-    [
-      Html.text "Refresh"
-    ],
+    Html.button [ Events.onClick address Refresh ] [ Html.text "Refresh" ],
     Html.text message
   ]
 
