@@ -1,3 +1,10 @@
 module Players.Actions (..) where
 
-type Action = NoOp
+import Players.Models exposing (PlayerId)
+import Hop
+
+type Action
+  = NoOp
+  | HopAction ()
+  | EditPlayer PlayerId
+  | ListPlayers
