@@ -21,6 +21,13 @@ update action model =
     ListPlayers ->
       let path = "/players"
       in ( model.players, Effects.map HopAction (navigateTo path) )
+    FetchAllDone result ->
+      case result of
+        Ok players ->
+          ( players, Effects.none )
+        Err error ->
+          ( model.players, Effects.none )
+
     HopAction _ ->
       ( model.players, Effects.none )
     NoOp ->

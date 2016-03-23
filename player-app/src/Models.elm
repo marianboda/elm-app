@@ -10,6 +10,6 @@ type alias AppModel =
 
 initialModel : AppModel
 initialModel =
-  { players = [ Player 1 "Mirki" 1, Player 2 "Petki" 2 ]
+  { players = []
   , routing = Routing.initialModel
   }

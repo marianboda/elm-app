@@ -10,9 +10,15 @@ import Actions exposing (..)
 import Models exposing (..)
 import Update exposing (..)
 import View exposing (..)
+import Players.Effects
 
 init : ( AppModel, Effects Action )
-init = ( initialModel, Effects.none )
+init =
+  let
+    fxs = [ Effects.map PlayersAction Players.Effects.fetchAll ]
+    fx = Effects.batch fxs
+  in
+    ( initialModel, fx)
 
 app : StartApp.App AppModel
 app =
