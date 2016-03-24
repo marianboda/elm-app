@@ -40,6 +40,7 @@ module.exports = {
 
   devServer: {
     inline: true,
+    quiet: false,
     stats: { colors: true },
   },
 };

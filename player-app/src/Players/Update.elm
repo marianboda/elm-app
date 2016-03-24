@@ -8,6 +8,7 @@ import Players.Models exposing (..)
 
 type alias UpdateModel =
   { players : List Player
+  , showErrorAddress : Signal.Address String
   }
 
 update : Action -> UpdateModel -> ( List Player, Effects Action )
@@ -26,8 +27,15 @@ update action model =
         Ok players ->
           ( players, Effects.none )
         Err error ->
-          ( model.players, Effects.none )
-
+          let
+            errorMessage = toString error
+            fx = Signal.send model.showErrorAddress errorMessage
+              |> Effects.task
+              |> Effects.map TaskDone
+          in
+            ( model.players, fx )
+    TaskDone () ->
+      ( model.players, Effects.none )
     HopAction _ ->
       ( model.players, Effects.none )
     NoOp ->

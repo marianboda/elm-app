@@ -1,5 +1,7 @@
 module View (..) where
 import Html exposing (..)
+import Html.Attributes exposing (..)
+import String
 
 import Actions exposing (..)
 import Models exposing (..)
@@ -13,7 +15,10 @@ view address model =
   let
     _ = Debug.log "model" model
   in
-    div [] [ page address model ]
+    div []
+      [ flash address model
+      , page address model
+      ]
 
 page : Signal.Address Action -> AppModel -> Html
 page address model =
@@ -25,14 +30,14 @@ page address model =
     Routing.NotFoundRoute ->
       notFoundView
 
-playersPage : Signal.Address Action -> AppModel -> Html.Html
+playersPage : Signal.Address Action -> AppModel -> Html
 playersPage address model =
   let
     viewModel = { players = model.players }
   in
     Players.List.view (Signal.forwardTo address PlayersAction) viewModel
 
-playerEditPage : Signal.Address Action -> AppModel -> PlayerId -> Html.Html
+playerEditPage : Signal.Address Action -> AppModel -> PlayerId -> Html
 playerEditPage address model playerId =
   let
     maybePlayer =
@@ -52,3 +57,12 @@ playerEditPage address model playerId =
 notFoundView : Html.Html
 notFoundView =
   div [] [ text "Not found" ]
+
+flash : Signal.Address Action -> AppModel -> Html
+flash address model =
+  if String.isEmpty model.errorMessage then
+    span [] []
+  else
+    div
+      [ class "bold center p2 mb2 white bg-red rounded" ]
+      [ text model.errorMessage ]
