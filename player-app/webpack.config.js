@@ -41,6 +41,16 @@ module.exports = {
   devServer: {
     inline: true,
     quiet: false,
-    stats: { colors: true },
+    noInfo: false,
+    stats: {
+      // Config for minimal console.log mess.
+      assets: false,
+      colors: true,
+      version: false,
+      hash: false,
+      timings: false,
+      chunks: false,
+      chunkModules: false
+    }
   },
 };
