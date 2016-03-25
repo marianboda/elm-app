@@ -11,3 +11,5 @@ type Action
   | ListPlayers
   | FetchAllDone (Result Http.Error (List Player))
   | TaskDone ()
+  | CreatePlayer
+  | CreatePlayerDone (Result Http.Error Player)

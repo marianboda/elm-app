@@ -22,7 +22,9 @@ nav : Signal.Address Action -> ViewModel -> Html
 nav address model =
   div
     [ class "clearfix mb2 white bg-black" ]
-    [ div [ class "p2 left" ] [ text "Players" ] ]
+    [ div [ class "p2 left" ] [ text "Players" ]
+    , div [ class "p1 right"] [ addBtn address model ]
+    ]
 
 list : Signal.Address Action -> ViewModel -> Html
 list address model =
@@ -55,10 +57,18 @@ playerRow address model player =
     , td [] [ editBtn address player ]
     ]
 
-editBtn : Signal.Address Action -> Player -> Html.Html
+editBtn : Signal.Address Action -> Player -> Html
 editBtn address player =
   button
     [ class "btn regular"
     , onClick address (EditPlayer player.id)
     ]
     [ i [ class "fa fa-pencil mr1" ] [], text "Edit" ]
+
+addBtn : Signal.Address Action -> ViewModel -> Html
+addBtn address model =
+  button
+    [ class "btn", onClick address CreatePlayer ]
+    [ i [ class "fa fa-user-plus mr1" ] []
+    , text "Add"
+    ]

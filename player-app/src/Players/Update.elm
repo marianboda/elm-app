@@ -1,10 +1,12 @@
 module Players.Update (..) where
 
 import Effects exposing (Effects)
+import Task
 import Hop.Navigate exposing (navigateTo)
 
 import Players.Actions exposing (..)
 import Players.Models exposing (..)
+import Players.Effects exposing (..)
 
 type alias UpdateModel =
   { players : List Player
@@ -36,6 +38,24 @@ update action model =
             ( model.players, fx )
     TaskDone () ->
       ( model.players, Effects.none )
+    CreatePlayer ->
+      ( model.players, create new )
+    CreatePlayerDone result ->
+      case result of
+        Ok player ->
+          let
+            updatedPlayers = player :: model.players
+            fx = Task.succeed (EditPlayer player.id) |> Effects.task
+          in
+            ( updatedPlayers, fx )
+        Err error ->
+          let
+            message = toString error
+            fx = Signal.send model.showErrorAddress message
+              |> Effects.task
+              |> Effects.map TaskDone
+          in
+            ( model.players, fx )
     HopAction _ ->
       ( model.players, Effects.none )
     NoOp ->
