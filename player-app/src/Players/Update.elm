@@ -100,6 +100,17 @@ update action model =
           |> Effects.batch
       in
         ( model.players, fx )
+    ChangeName playerId newName ->
+      let
+        fxForPlayer player =
+          if player.id /= playerId then
+            Effects.none
+          else
+            save { player | name = newName }
+        fx = List.map fxForPlayer model.players
+          |> Effects.batch
+      in
+        ( model.players, fx )
     SaveDone result ->
       case result of
         Ok player ->
@@ -122,7 +133,6 @@ update action model =
               |> Effects.map TaskDone
           in
             ( model.players, fx )
-
     HopAction _ ->
       ( model.players, Effects.none )
     NoOp ->

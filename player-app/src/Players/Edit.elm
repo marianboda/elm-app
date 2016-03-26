@@ -2,7 +2,7 @@ module Players.Edit (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (class, value, href)
-import Html.Events exposing (onClick)
+import Html.Events exposing (on, onClick, targetValue)
 import Players.Models exposing (..)
 import Players.Actions exposing (..)
 
@@ -77,6 +77,8 @@ inputName address model =
   input
     [ class "field-light"
     , value model.player.name
+    , on "change" targetValue
+      (\str -> Signal.message address (ChangeName model.player.id str))
     ]
     []
 

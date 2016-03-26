@@ -20,3 +20,5 @@ type Action
 
   | ChangeLevel PlayerId Int
   | SaveDone (Result Http.Error Player)
+
+  | ChangeName PlayerId String
