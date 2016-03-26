@@ -60,3 +60,26 @@ memberEncoded player =
       ]
   in
     list |> Encode.object
+
+deleteUrl : PlayerId -> String
+deleteUrl playerId = "http://localhost:4000/players/" ++ (toString playerId)
+
+deleteTask : PlayerId -> Task.Task Http.Error ()
+deleteTask playerId =
+  let
+    config =
+      { verb = "DELETE"
+      , headers = [ ( "Content-Type", "application/json" ) ]
+      , url = deleteUrl playerId
+      , body = Http.empty
+      }
+  in
+    Http.send Http.defaultSettings config
+      |> Http.fromJson (Decode.succeed ())
+
+delete : PlayerId -> Effects Action
+delete playerId =
+  deleteTask playerId
+    |> Task.toResult
+    |> Task.map (DeletePlayerDone playerId)
+    |> Effects.task

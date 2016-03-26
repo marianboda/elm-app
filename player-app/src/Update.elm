@@ -13,8 +13,11 @@ update action model =
   case (Debug.log "action" action) of
     PlayersAction subAction ->
       let
-        updateModel = { players = model.players
-        , showErrorAddress = Signal.forwardTo actionsMailbox.address ShowError }
+        updateModel =
+          { players = model.players
+          , showErrorAddress = Signal.forwardTo actionsMailbox.address ShowError
+          , deleteConfirmationAddress = askDeleteConfirmationMailbox.address
+          }
         ( updatedPlayers, fx ) = Players.Update.update subAction updateModel
       in
         ( { model | players = updatedPlayers }, Effects.map PlayersAction fx )
