@@ -18,6 +18,8 @@ fetchAllUrl : String
 fetchAllUrl = "http://localhost:4000/players"
 createUrl : String
 createUrl = "http://localhost:4000/players"
+saveUrl : PlayerId -> String
+saveUrl playerId = "http://localhost:4000/players/" ++ (toString playerId)
 
 collectionDecoder : Decode.Decoder (List Player)
 collectionDecoder =
@@ -82,4 +84,27 @@ delete playerId =
   deleteTask playerId
     |> Task.toResult
     |> Task.map (DeletePlayerDone playerId)
+    |> Effects.task
+
+saveTask : Player -> Task.Task Http.Error Player
+saveTask player =
+  let
+    body = memberEncoded player
+      |> Encode.encode 0
+      |> Http.string
+    config =
+      { verb = "PATCH"
+      , headers = [ ( "Content-Type", "application/json" ) ]
+      , url = saveUrl player.id
+      , body = body
+      }
+  in
+    Http.send Http.defaultSettings config
+      |> Http.fromJson memberDecoder
+
+save : Player -> Effects Action
+save player =
+  saveTask player
+    |> Task.toResult
+    |> Task.map SaveDone
     |> Effects.task
